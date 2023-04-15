@@ -35,8 +35,16 @@ func NewTrafficSignalSystem(num int) *TrafficSignalSystem {
 	return &system
 }
 
-// executa o sistema de semáforos
+// executa o sistema de sinais
 func (s *TrafficSignalSystem) Exec(data chan []TrafficSignal, changes chan []TrafficSignal) {
+	// imprime a configuração de tempo atual dos sinais
+	fmt.Println("################### TRAFFIC SIGNAL CONTROL SYSTEM ####################################")
+	for i := range s.TrafficSignals {
+		fmt.Println("O semáforo de ID:", s.TrafficSignals[i].Id, "tem os seguintes tempos, Verde:", s.TrafficSignals[i].TimeGreen, "Amarelo:", s.TrafficSignals[i].TimeYellow, "Vermelho:", s.TrafficSignals[i].TimeRed)
+	}
+	fmt.Println("######################################################################################")
+	fmt.Println("")
+
 	for {
 		data <- s.TrafficSignals
 		ts := <-changes
@@ -52,6 +60,7 @@ func (s *TrafficSignalSystem) Exec(data chan []TrafficSignal, changes chan []Tra
 
 			}
 		}
+		// imprime a configuração de tempo atual dos sinais
 		fmt.Println("################### TRAFFIC SIGNAL CONTROL SYSTEM ####################################")
 		for i := range s.TrafficSignals {
 			fmt.Println("O semáforo de ID:", s.TrafficSignals[i].Id, "tem os seguintes tempos, Verde:", s.TrafficSignals[i].TimeGreen, "Amarelo:", s.TrafficSignals[i].TimeYellow, "Vermelho:", s.TrafficSignals[i].TimeRed)
@@ -61,48 +70,3 @@ func (s *TrafficSignalSystem) Exec(data chan []TrafficSignal, changes chan []Tra
 	}
 
 }
-
-/*func (s *TrafficSignalSystem) Exec() {
-	for {
-		//toMonitor <- s.TrafficSignals
-		time.Sleep(10 * time.Second)
-		conn, err := net.Dial("tcp", "localhost:8080")
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer conn.Close()
-
-		// Envia a mensagem ao servidor
-		encoder := json.NewEncoder(conn)
-		if err := encoder.Encode(s.TrafficSignals); err != nil {
-			log.Fatal(err)
-		}
-
-		// Lê a resposta do servidor
-		decoder := json.NewDecoder(conn)
-		var ts []TrafficSignal
-		if err := decoder.Decode(&ts); err != nil {
-			log.Fatal(err)
-		}
-
-		//ts := <-fromExecutor
-
-		// itera sobre os semáforos alterados e os pertencentes ao sistema para aplicar as alterações
-		for _, signalsChange := range ts {
-			for j, signals := range s.TrafficSignals {
-				if signalsChange.Id == signals.Id {
-					s.TrafficSignals[j].TimeGreen = signalsChange.TimeGreen
-					s.TrafficSignals[j].TimeYellow = signalsChange.TimeYellow
-					s.TrafficSignals[j].TimeRed = signalsChange.TimeRed
-				}
-
-			}
-		}
-		fmt.Println("################### TRAFFIC SIGNAL CONTROL SYSTEM ####################################")
-		for i := range s.TrafficSignals {
-			fmt.Println("O semáforo de ID:", s.TrafficSignals[i].Id, "tem os seguintes tempos, Verde:", s.TrafficSignals[i].TimeGreen, "Amarelo:", s.TrafficSignals[i].TimeYellow, "Vermelho:", s.TrafficSignals[i].TimeRed)
-		}
-		fmt.Println("######################################################################################")
-	}
-
-}*/
