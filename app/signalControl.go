@@ -11,6 +11,7 @@ type TrafficSignal struct {
 	TimeGreen  int
 	TimeYellow int
 	TimeRed    int
+	Congestion int
 }
 
 // tipo sistema de semáforos
@@ -20,7 +21,7 @@ type TrafficSignalSystem struct {
 
 // instancia um semáforo
 func NewTrafficSignal(id int) TrafficSignal {
-	s := TrafficSignal{Id: id, TimeGreen: constants.DefaultGreen, TimeYellow: constants.DefaultYellow, TimeRed: constants.DefaultRed}
+	s := TrafficSignal{Id: id, TimeGreen: constants.DefaultGreen, TimeYellow: constants.DefaultYellow, TimeRed: constants.DefaultRed, Congestion: constants.DefaultTraffic}
 
 	return s
 }
