@@ -11,3 +11,5 @@ const MaxTraffic = 30
 
 // Traffic Parameters
 const TrafficSignalNumber = 3
+
+const UrlProcessorMicroservice = "http://processor-svc/traffic/info?id=%d"

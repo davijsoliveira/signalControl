@@ -40,7 +40,7 @@ func main() {
 
 	// Inicia o servidor na porta 8081
 	fmt.Println("Configurator Microservice Started...")
-	http.ListenAndServe(":8081", nil)
+	http.ListenAndServe(":8080", nil)
 
 	wg.Wait()
 }

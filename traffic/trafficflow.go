@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"signalControl/app"
+	"signalControl/constants"
 	"time"
 )
 
@@ -37,7 +38,7 @@ func (t *TrafficFlow) Exec(s *app.TrafficSignalSystem) {
 
 // Coleta o congestionamento no Processor Microservice
 func getAverageFlowRate(signalID int) (int, error) {
-	resp, err := http.Get(fmt.Sprintf("http://localhost:8082/traffic/info?id=%d", signalID))
+	resp, err := http.Get(fmt.Sprintf(constants.UrlProcessorMicroservice, signalID))
 	if err != nil {
 		return 0, err
 	}
