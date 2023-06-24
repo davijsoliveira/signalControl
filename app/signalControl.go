@@ -3,20 +3,10 @@ package app
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"signalControl/constants"
 	"sync"
 )
-
-// tipo semáforo
-//type TrafficSignal struct {
-//	Id         int
-//	TimeGreen  int
-//	TimeYellow int
-//	TimeRed    int
-//	Congestion int
-//}
 
 type TrafficSignal struct {
 	Id         int `json:"id"`
@@ -25,11 +15,6 @@ type TrafficSignal struct {
 	TimeRed    int `json:"timered"`
 	Congestion int `json:"congestion"`
 }
-
-// tipo sistema de semáforos
-//type TrafficSignalSystem struct {
-//	TrafficSignals []TrafficSignal
-//}
 
 type TrafficSignalSystem struct {
 	TrafficSignals []TrafficSignal `json:"trafficsignals"`
@@ -66,41 +51,6 @@ func NewTrafficSignalSystem(num int) *TrafficSignalSystem {
 	return &system
 }
 
-// executa o sistema de sinais
-func (s *TrafficSignalSystem) Exec(data chan []TrafficSignal, changes chan []TrafficSignal) {
-	// imprime a configuração de tempo atual dos sinais
-	fmt.Println("################### TRAFFIC SIGNAL CONTROL SYSTEM ####################################")
-	for i := range s.TrafficSignals {
-		fmt.Println("O semáforo de ID:", s.TrafficSignals[i].Id, "tem os seguintes tempos, Verde:", s.TrafficSignals[i].TimeGreen, "Amarelo:", s.TrafficSignals[i].TimeYellow, "Vermelho:", s.TrafficSignals[i].TimeRed)
-	}
-	fmt.Println("######################################################################################")
-	fmt.Println("")
-
-	for {
-		data <- s.TrafficSignals
-		ts := <-changes
-
-		// itera sobre os semáforos alterados e os pertencentes ao sistema para aplicar as alterações
-		for _, signalsChange := range ts {
-			for j, signals := range s.TrafficSignals {
-				if signalsChange.Id == signals.Id {
-					s.TrafficSignals[j].TimeGreen = signalsChange.TimeGreen
-					s.TrafficSignals[j].TimeYellow = signalsChange.TimeYellow
-					s.TrafficSignals[j].TimeRed = signalsChange.TimeRed
-				}
-
-			}
-		}
-		// imprime a configuração de tempo atual dos sinais
-		fmt.Println("################### TRAFFIC SIGNAL CONTROL SYSTEM ####################################")
-		for i := range s.TrafficSignals {
-			fmt.Println("O semáforo de ID:", s.TrafficSignals[i].Id, "tem os seguintes tempos, Verde:", s.TrafficSignals[i].TimeGreen, "Amarelo:", s.TrafficSignals[i].TimeYellow, "Vermelho:", s.TrafficSignals[i].TimeRed)
-		}
-		fmt.Println("######################################################################################")
-		fmt.Println("")
-	}
-
-}
 func (s *TrafficSignalSystem) ExposeData(w http.ResponseWriter, r *http.Request) {
 	// Converte os dados da struct para JSON
 	jsonData, err := json.Marshal(s.TrafficSignals)
@@ -114,39 +64,6 @@ func (s *TrafficSignalSystem) ExposeData(w http.ResponseWriter, r *http.Request)
 
 	// Escreve o JSON na resposta
 	w.Write(jsonData)
-}
-
-func (s *TrafficSignalSystem) UpdateSignal(w http.ResponseWriter, r *http.Request) {
-	// Lê o corpo da solicitação POST
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	// Decodifica o JSON recebido no corpo da solicitação
-	var updatedSignal TrafficSignal
-	err = json.Unmarshal(body, &updatedSignal)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	fmt.Println(updatedSignal.Id)
-	fmt.Println(updatedSignal.Congestion)
-	fmt.Println(updatedSignal.TimeRed)
-	fmt.Println(updatedSignal.TimeYellow)
-	fmt.Println(updatedSignal.TimeGreen)
-	// Atualiza o sinal de trânsito correspondente no slice TrafficSignals
-	//for i, signal := range s.TrafficSignals {
-	//	if signal.Id == updatedSignal.Id {
-	//		s.TrafficSignals[i] = updatedSignal
-	//		break
-	//	}
-	//}
-
-	// Retorna uma resposta de sucesso
-	fmt.Fprint(w, "Sinal de trânsito atualizado com sucesso!")
 }
 
 func (s *TrafficSignalSystem) HandleTrafficSignal(w http.ResponseWriter, r *http.Request) {

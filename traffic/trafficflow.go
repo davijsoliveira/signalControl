@@ -23,21 +23,19 @@ func NewTrafficFlow() *TrafficFlow {
 // executa o fluxo de trânsito, gerando congestionamentos aleatórios
 func (t *TrafficFlow) Exec(s *app.TrafficSignalSystem) {
 	for {
-		// gera um número aletório de congestionamento para cada sinal
+		// Coleta o congestionamento no Processor Microservice para cada sinal
 		for i := range s.TrafficSignals {
 			averageFlowRate, err := getAverageFlowRate(s.TrafficSignals[i].Id)
 			if err != nil {
 				log.Printf("Failed to get average flow rate for traffic signal %d: %v\n", s.TrafficSignals[i].Id, err)
 			}
-			//else {
-			//	log.Printf("Average flow rate for Traffic Signal %d: %d\n", s.TrafficSignals[i].Id, averageFlowRate)
-			//}
 			s.TrafficSignals[i].Congestion = averageFlowRate
 		}
 		time.Sleep(5 * time.Second)
 	}
 }
 
+// Coleta o congestionamento no Processor Microservice
 func getAverageFlowRate(signalID int) (int, error) {
 	resp, err := http.Get(fmt.Sprintf("http://localhost:8082/traffic/info?id=%d", signalID))
 	if err != nil {

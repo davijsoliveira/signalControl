@@ -24,22 +24,15 @@ func main() {
 	// variável wait group para controlar as go routines
 	var wg sync.WaitGroup
 
-	// cria os canais
-	//appToAgent := make(chan []app.TrafficSignal)
-	//agentToApp := make(chan []app.TrafficSignal)
-
 	// instancia a aplicação e o agente
 	signalControl := app.NewTrafficSignalSystem(constants.TrafficSignalNumber)
 	trafficFlw := traffic.NewTrafficFlow()
-	//agt := agent.NewAgent()
 
-	// coloca em execução a aplicação e o agente
-	wg.Add(4)
-	//go signalControl.Exec(appToAgent, agentToApp)
+	// coloca em execução a aplicação
+	wg.Add(2)
 	go trafficFlw.Exec(signalControl)
-	//go agt.Exec(appToAgent, agentToApp)
 
-	// Define a rota e o handler para expor os dados
+	// Define a rota e o handler para expor as informações dos sinais de trânsito
 	http.HandleFunc("/traffic-signals-current", signalControl.ExposeData)
 
 	// Define a rota e o handler para atualizar um sinal de trânsito
