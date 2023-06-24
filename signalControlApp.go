@@ -10,7 +10,6 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"signalControl/agent"
 	"signalControl/app"
 	"signalControl/constants"
 	"signalControl/traffic"
@@ -26,19 +25,19 @@ func main() {
 	var wg sync.WaitGroup
 
 	// cria os canais
-	appToAgent := make(chan []app.TrafficSignal)
-	agentToApp := make(chan []app.TrafficSignal)
+	//appToAgent := make(chan []app.TrafficSignal)
+	//agentToApp := make(chan []app.TrafficSignal)
 
 	// instancia a aplicação e o agente
 	signalControl := app.NewTrafficSignalSystem(constants.TrafficSignalNumber)
 	trafficFlw := traffic.NewTrafficFlow()
-	agt := agent.NewAgent()
+	//agt := agent.NewAgent()
 
 	// coloca em execução a aplicação e o agente
 	wg.Add(4)
-	go signalControl.Exec(appToAgent, agentToApp)
+	//go signalControl.Exec(appToAgent, agentToApp)
 	go trafficFlw.Exec(signalControl)
-	go agt.Exec(appToAgent, agentToApp)
+	//go agt.Exec(appToAgent, agentToApp)
 
 	// Define a rota e o handler para expor os dados
 	http.HandleFunc("/traffic-signals-current", signalControl.ExposeData)
@@ -47,7 +46,7 @@ func main() {
 	http.HandleFunc("/traffic-signals-update", signalControl.HandleTrafficSignal)
 
 	// Inicia o servidor na porta 8081
-	fmt.Println("Servidor iniciado na porta 8081")
+	fmt.Println("Configurator Microservice Started...")
 	http.ListenAndServe(":8081", nil)
 
 	wg.Wait()

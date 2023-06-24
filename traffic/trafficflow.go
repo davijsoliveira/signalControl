@@ -25,17 +25,14 @@ func (t *TrafficFlow) Exec(s *app.TrafficSignalSystem) {
 	for {
 		// gera um número aletório de congestionamento para cada sinal
 		for i := range s.TrafficSignals {
-			//time.Sleep(2 * time.Second)
-			//rand.Seed(time.Now().UnixNano())
-			//congestion := rand.Intn(constants.MaxTraffic)
 			averageFlowRate, err := getAverageFlowRate(s.TrafficSignals[i].Id)
 			if err != nil {
 				log.Printf("Failed to get average flow rate for traffic signal %d: %v\n", s.TrafficSignals[i].Id, err)
-			} else {
-				log.Printf("Average flow rate for Traffic Signal %d: %d\n", s.TrafficSignals[i].Id, averageFlowRate)
 			}
+			//else {
+			//	log.Printf("Average flow rate for Traffic Signal %d: %d\n", s.TrafficSignals[i].Id, averageFlowRate)
+			//}
 			s.TrafficSignals[i].Congestion = averageFlowRate
-			//s.TrafficSignals[i].Congestion = congestion
 		}
 		time.Sleep(5 * time.Second)
 	}

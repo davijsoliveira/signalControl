@@ -197,8 +197,8 @@ func (s *TrafficSignalSystem) HandleTrafficSignal(w http.ResponseWriter, r *http
 	}
 
 	// Exibir informações da requisição POST
-	fmt.Printf("Traffic Signal ID: %d, Congestion: %d, Red Light Time: %d, Yellow Light Time: %d, Green Light Time: %d\n",
-		trafficSignal.Id, trafficSignal.Congestion, trafficSignal.TimeRed, trafficSignal.TimeYellow, trafficSignal.TimeGreen)
+	fmt.Printf("Traffic Signal ID: %d, tem os seguintes tempos, Verde: %d, Amarelo: %d, Vermelho: %d\n",
+		trafficSignal.Id, trafficSignal.TimeGreen, trafficSignal.TimeYellow, trafficSignal.TimeRed)
 
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprint(w, "Traffic signal data stored successfully")
